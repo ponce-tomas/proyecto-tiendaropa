@@ -1,78 +1,197 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Menú de Ropa</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Tienda de ropa con secciones para mujer, hombre y ofertas." />
+  <title>Menú — Tienda de Ropa</title>
   <style>
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      background-color: #333;
-      display: flex;
+    :root{
+      --bg:#333;
+      --bg-2:#444;
+      --accent:#ffcc00;
+      --text:#fff;
+      --gap:0.25rem;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:#fafafa;
+      color:#111;
     }
 
-    nav li {
-      position: relative; 
+    header{background:var(--bg); color:var(--text)}
+    .container{max-width:1100px;margin:0 auto;padding:0 1rem}
+
+    /* Nav layout */
+    nav{display:flex;align-items:center;justify-content:space-between}
+    .brand{padding:12px 0;color:var(--text);font-weight:600}
+    .nav-toggle{
+      display:none;
+      background:transparent;border:0;color:var(--text);
+      font-size:1.25rem;padding:12px;
     }
 
-    nav a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      padding: 15px 20px;
+    /* Menu */
+    ul.menu{
+      list-style:none;margin:0;padding:0;display:flex;gap:var(--gap);
+    }
+    ul.menu > li{position:relative}
+    .menu a, .menu button.submenu-toggle{
+      display:block;color:var(--text);text-decoration:none;padding:15px 18px;
+      background:transparent;border:0;cursor:pointer;font:inherit;
+    }
+    .menu a:focus, .menu button:focus,
+    .menu a:hover, .menu button:hover{
+      background:#555;outline:none;
     }
 
-    nav a:hover {
-      background-color: #555;
+    /* Dropdown */
+    ul.submenu{
+      display:none;
+      position:absolute;top:100%;left:0;min-width:160px;
+      background:var(--bg-2);flex-direction:column;padding:6px 0;border-radius:4px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.18);
+      z-index:200;
+    }
+    ul.submenu li a{padding:10px 14px;color:var(--text)}
+    /* show when parent has .open */
+    li.has-submenu.open > ul.submenu{display:flex}
+
+    /* Focus-visible for keyboard users */
+    :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+    /* Responsive: collapse into hamburger on small screens */
+    @media (max-width:720px){
+      .nav-toggle{display:block}
+      ul.menu{
+        display:none;
+        width:100%;
+        flex-direction:column;
+        background:var(--bg);
+      }
+      ul.menu.show{display:flex}
+      ul.menu > li{border-top:1px solid rgba(255,255,255,0.05)}
+      ul.submenu{position:static;box-shadow:none;padding-left:0}
+      li.has-submenu.open > ul.submenu{display:flex}
     }
 
-    nav ul ul {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background-color: #444;
-      flex-direction: column;
-      min-width: 150px;
-      z-index: 1;
-    }
-
-    nav li:hover > ul {
-      display: flex;
-    }
-    nav ul ul a {
-      padding: 10px 15px;
+    /* small cosmetic footer */
+    footer{
+      padding:1rem 0;
+      text-align:center;
+      font-size:0.9rem;color:#444;
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between">
+      <div class="brand">Tienda de Ropa</div>
+      <button class="nav-toggle" aria-controls="main-menu" aria-expanded="false" id="navToggle">☰ <span class="sr-only">Abrir menú</span></button>
+    </div>
+    <nav class="container" aria-label="Menú principal">
+      <ul id="main-menu" class="menu" role="menubar">
+        <li role="none"><a role="menuitem" href="#">Inicio</a></li>
 
-  <nav>
-    <ul>
-      <li><a href="#">Inicio</a></li>
-      
-      <li>
-        <a href="#">Mujer</a>
-        <ul>
-          <li><a href="#">Ropa</a></li>
-          <li><a href="#">Calzado</a></li>
-          <li><a href="#">Accesorios</a></li>
-        </ul>
-      </li>
+        <li class="has-submenu" role="none">
+          <button class="submenu-toggle" aria-haspopup="true" aria-expanded="false">Mujer ▾</button>
+          <ul class="submenu" role="menu" aria-label="Mujer">
+            <li role="none"><a role="menuitem" href="#">Ropa</a></li>
+            <li role="none"><a role="menuitem" href="#">Calzado</a></li>
+            <li role="none"><a role="menuitem" href="#">Accesorios</a></li>
+          </ul>
+        </li>
 
-      <li>
-        <a href="#">Hombre</a>
-        <ul>
-          <li><a href="#">Ropa</a></li>
-          <li><a href="#">Calzado</a></li>
-        </ul>
-      </li>
+        <li class="has-submenu" role="none">
+          <button class="submenu-toggle" aria-haspopup="true" aria-expanded="false">Hombre ▾</button>
+          <ul class="submenu" role="menu" aria-label="Hombre">
+            <li role="none"><a role="menuitem" href="#">Ropa</a></li>
+            <li role="none"><a role="menuitem" href="#">Calzado</a></li>
+          </ul>
+        </li>
 
-      <li><a href="#">Ofertas</a></li>
-    </ul>
-  </nav>
+        <li role="none"><a role="menuitem" href="#">Ofertas</a></li>
+      </ul>
+    </nav>
+  </header>
 
+  <main class="container" style="padding:1.5rem 1rem">
+    <h1>Bienvenido a la Tienda</h1>
+    <p>Agrega aquí un pequeño texto sobre la tienda, productos destacados o enlaces directos a categorías.</p>
+    <!-- Example product grid placeholder -->
+    <section aria-label="Productos destacados" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:1rem">
+      <article style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+        <h2 style="font-size:1rem;margin:0 0 .5rem">Camiseta</h2>
+        <p style="margin:0;color:#666">Descripción corta</p>
+      </article>
+      <article style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+        <h2 style="font-size:1rem;margin:0 0 .5rem">Pantalón</h2>
+        <p style="margin:0;color:#666">Descripción corta</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="year"></span> Tienda de Ropa</div>
+  </footer>
+
+  <script>
+    // Small accessible behavior:
+    (function(){
+      const navToggle = document.getElementById('navToggle');
+      const mainMenu = document.getElementById('main-menu');
+      // mobile menu toggle
+      navToggle.addEventListener('click', () => {
+        const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+        navToggle.setAttribute('aria-expanded', String(!expanded));
+        mainMenu.classList.toggle('show');
+      });
+
+      // submenu toggles
+      document.querySelectorAll('.has-submenu > .submenu-toggle').forEach(btn => {
+        const li = btn.parentElement;
+        const submenu = li.querySelector('.submenu');
+
+        btn.addEventListener('click', (e) => {
+          const isOpen = btn.getAttribute('aria-expanded') === 'true';
+          // close other open submenus (optional)
+          document.querySelectorAll('.has-submenu.open').forEach(other=>{
+            if(other !== li){ other.classList.remove('open'); other.querySelector('.submenu-toggle').setAttribute('aria-expanded','false'); }
+          });
+          if(isOpen){
+            li.classList.remove('open');
+            btn.setAttribute('aria-expanded','false');
+          } else {
+            li.classList.add('open');
+            btn.setAttribute('aria-expanded','true');
+          }
+        });
+
+        // close on Escape key
+        btn.addEventListener('keydown', (e) => {
+          if(e.key === 'Escape'){
+            li.classList.remove('open');
+            btn.setAttribute('aria-expanded','false');
+            btn.focus();
+          }
+        });
+      });
+
+      // close menus when clicking outside
+      document.addEventListener('click', (e) => {
+        if(!e.target.closest('nav')){
+          document.querySelectorAll('.has-submenu.open').forEach(el=>{
+            el.classList.remove('open');
+            el.querySelector('.submenu-toggle').setAttribute('aria-expanded','false');
+          });
+        }
+      });
+
+      // set current year
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
 </body>
 </html>
