@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Menú de Ropa</title>
+  <style>
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background-color: #333;
+      display: flex;
+    }
+
+    nav li {
+      position: relative; 
+    }
+
+    nav a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 15px 20px;
+    }
+
+    nav a:hover {
+      background-color: #555;
+    }
+
+    nav ul ul {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #444;
+      flex-direction: column;
+      min-width: 150px;
+      z-index: 1;
+    }
+
+    nav li:hover > ul {
+      display: flex;
+    }
+    nav ul ul a {
+      padding: 10px 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <ul>
+      <li><a href="#">Inicio</a></li>
+      
+      <li>
+        <a href="#">Mujer</a>
+        <ul>
+          <li><a href="#">Ropa</a></li>
+          <li><a href="#">Calzado</a></li>
+          <li><a href="#">Accesorios</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="#">Hombre</a>
+        <ul>
+          <li><a href="#">Ropa</a></li>
+          <li><a href="#">Calzado</a></li>
+        </ul>
+      </li>
+
+      <li><a href="#">Ofertas</a></li>
+    </ul>
+  </nav>
+
+</body>
+</html>
