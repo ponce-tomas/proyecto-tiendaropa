@@ -1,17 +1,504 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
-  <link rel="stylesheet" href="style.css">
-<title>CLANDESTYLE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clandestyle</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>¡Bienvenidos a nuestra tienda de ropa!</h1>
-<p>
-Buscas ropa? esa ropa para salir, para esa cita, para esa juntada o simplemente para estar comodo en casa?
-  Descubriste el lugar indicado. Todo eso y mas, vas a encontrar en CLANDESTYLE!!, tu tienda de ropa de confianza
-</p>
-  <button>comprar</button>
 
+<header>
+  <a href="#inicio" class="logo">CLANDESTYLE</a>
+  <nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#coleccion">Colección</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#admin">Admin</a>
+  </nav>
+  <button class="menu-hamburguesa" onclick="abrirMenu()">☰</button>
+  <button class="boton boton-blanco" onclick="abrirCarrito()">Carrito (<span id="contador">0</span>)</button>
+  <section id="menu-extra" class="menu-extra">
+    <div>
+      <h3>Contacto</h3>
+      <p>📍 Córdoba, Argentina</p>
+      <p>📞 351 1234567</p>
+      <p>📧 clandestyle@gmail.com</p>
+    </div>
+    <div>
+      <h3>Formas de pago</h3>
+      <p>💳 Tarjeta</p>
+      <p>🏦 Transferencia</p>
+      <p>💵 Efectivo al recibir</p>
+    </div>
+    <div>
+      <h3>Categorías</h3>
+      <div id="menu-cats"></div>
+    </div>
+  </section>
+</header>
+
+<main id="inicio">
+
+  <section class="portada">
+    <h1>Redefiní tu estilo</h1>
+    <p>Ropa de la mejor calidad </p>
+    <a href="#coleccion"><button class="boton boton-blanco">Ver colección</button></a>
+  </section>
+
+  <section class="productos" id="coleccion">
+    <h2>Colección</h2>
+    <div class="tarjetas" id="lista-productos"></div>
+  </section>
+
+  <section class="productos">
+    <h2>Stock</h2>
+    <table id="tabla-stock"></table>
+  </section>
+
+  <section class="contacto" id="contacto">
+    <h2>Contacto</h2>
+    <p>📍 Córdoba, Argentina</p>
+    <p>📞 351 1234567</p>
+    <p>📧 clandestyle@gmail.com</p>
+    <div class="redes">
+      <a href="#">📷 Instagram</a>
+      <a href="#">📘 Facebook</a>
+      <a href="#">🎵 TikTok</a>
+    </div>
+  </section>
+
+  <section class="formulario">
+    <h2>Escribinos</h2>
+    <form onsubmit="event.preventDefault(); alert('Mensaje enviado'); this.reset();">
+      <label>Nombre:</label>
+      <input type="text" required>
+      <label>Correo electrónico:</label>
+      <input type="email" required>
+      <label>Mensaje:</label>
+      <textarea required></textarea>
+      <button type="submit" class="boton boton-blanco">Enviar</button>
+    </form>
+  </section>
+
+  <section class="admin" id="admin">
+    <h2>Panel Admin</h2>
+
+    <div id="login-admin">
+      <form onsubmit="entrarAdmin(event)">
+        <input type="password" id="clave" placeholder="Contraseña">
+        <button type="submit" class="boton boton-blanco">Entrar</button>
+      </form>
+      <p id="error-clave" style="display:none; color:red;">Contraseña incorrecta</p>
+    </div>
+
+    <div id="panel-admin" style="display:none;">
+      <button class="boton boton-rojo" onclick="salirAdmin()">Salir</button>
+
+      <form onsubmit="agregarProducto(event)">
+        <input type="text" id="n-nombre" placeholder="Nombre" required>
+        <input type="number" id="n-precio" placeholder="Precio" required>
+        <input type="url" id="n-img" placeholder="URL imagen" required>
+        <input type="text" id="n-desc" placeholder="Descripción" required>
+        <input type="text" id="n-cat" placeholder="Tipo (Remera, Pantalón...)" required>
+        <input type="number" id="n-stock" placeholder="Cantidad disponible" min="0" required>
+        <button type="submit" class="boton boton-verde">Agregar</button>
+      </form>
+
+      <div id="lista-admin"></div>
+      <button class="boton boton-rojo" onclick="restaurar()">Restaurar tienda</button>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Clandestyle © 2026</p>
+  <p>Ropa con actitud, hecha para durar.</p>
+  <a href="#">Instagram</a>
+  <a href="#">Facebook</a>
+</footer>
+
+<a href="#inicio" class="boton-flotante">⬆️</a>
+
+<div id="modal-carrito" class="fondo-modal">
+  <div class="caja-modal">
+    <button onclick="abrirCarrito()" class="cerrar">✖</button>
+    <h2>Carrito</h2>
+    <div id="items-carrito"></div>
+    <p>Total: $<span id="total-carrito">0</span></p>
+    <button class="boton boton-rojo" onclick="vaciarCarrito()">Vaciar carrito</button>
+    <button class="boton boton-blanco" onclick="pagar()">Pagar</button>
+  </div>
+</div>
+
+<div id="modal-pago" class="fondo-modal">
+  <div class="caja-modal">
+    <button onclick="cerrarPago()" class="cerrar">✖</button>
+    <h2>Pagar</h2>
+    <p>Total: $<span id="total-pago">0</span></p>
+    <form onsubmit="confirmarPago(event)">
+      <label>Nombre y apellido:</label>
+      <input type="text" id="p-nombre" required>
+      <label>Dirección de entrega:</label>
+      <input type="text" id="p-direccion" required>
+      <label>Forma de pago:</label>
+      <select id="forma-pago" onchange="cambiarPago()">
+        <option value="tarjeta">💳 Tarjeta</option>
+        <option value="transferencia">🏦 Transferencia</option>
+        <option value="efectivo">💵 Efectivo al recibir</option>
+      </select>
+      <div id="pago-tarjeta" class="datos-pago">
+        <input type="text" id="t-numero" placeholder="Número de tarjeta (16 dígitos)" maxlength="16">
+        <input type="text" id="t-venc" placeholder="Vencimiento (MM/AA)" maxlength="5">
+        <input type="text" id="t-cvv" placeholder="CVV (3 dígitos)" maxlength="3">
+      </div>
+      <div id="pago-transferencia" class="datos-pago" style="display:none;">
+        <p>Transferí el total a:<br>Alias: clandestyle.pago<br>CBU: 0000003100012345678901</p>
+        <p>Después mandá el comprobante a clandestyle@gmail.com</p>
+      </div>
+      <div id="pago-efectivo" class="datos-pago" style="display:none;">
+        <p>Pagás en efectivo cuando te entreguen el pedido.</p>
+      </div>
+      <button type="submit" class="boton boton-verde">Confirmar compra</button>
+    </form>
+  </div>
+</div>
+
+<div id="modal-editar" class="fondo-modal">
+  <div class="caja-modal">
+    <button onclick="cerrarEditar()" class="cerrar">✖</button>
+    <h2>Editar</h2>
+    <form onsubmit="guardarEdicion(event)">
+      <input type="hidden" id="e-id">
+      <input type="text" id="e-nombre" placeholder="Nombre" required>
+      <input type="number" id="e-precio" placeholder="Precio" required>
+      <input type="url" id="e-img" placeholder="URL imagen" required>
+      <input type="text" id="e-desc" placeholder="Descripción" required>
+      <input type="text" id="e-cat" placeholder="Tipo (Remera, Pantalón...)" required>
+      <input type="number" id="e-stock" placeholder="Cantidad disponible" min="0" required>
+      <button type="submit" class="boton boton-verde">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<script>
+// productos de ejemplo que se usan la primera vez
+var productosBase = [
+  {id:1, nombre:"Hoodie Onyx", precio:45000, img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600", desc:"Buzo oversize 400gsm", cat:"Buzo", stock:10},
+  {id:2, nombre:"Remera Vintage", precio:18500, img:"https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600", desc:"Remera lavado ácido", cat:"Remera", stock:10},
+  {id:3, nombre:"Cargo Pants", precio:52000, img:"https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600", desc:"Pantalón cargo premium", cat:"Pantalón", stock:4},
+  {id:4, nombre:"Gorra Classic", precio:12000, img:"https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600", desc:"Gorra clásica ajustable", cat:"Gorra", stock:10}
+];
+
+var productos = [];
+var carrito = [];
+var cats = [];
+var catActual = "";
+
+function copiaBase() { return JSON.parse(JSON.stringify(productosBase)); }
+
+function norm(s) { s = s.trim(); return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase(); }
+
+function guardarDatos() {
+  localStorage.setItem("productosTienda", JSON.stringify(productos));
+  localStorage.setItem("carritoTienda", JSON.stringify(carrito));
+}
+
+function cargarDatos() {
+  var p = localStorage.getItem("productosTienda");
+  var c = localStorage.getItem("carritoTienda");
+  productos = p ? JSON.parse(p) : copiaBase();
+  carrito = c ? JSON.parse(c) : [];
+  for (var i = 0; i < productos.length; i++) {
+    if (productos[i].stock === undefined) productos[i].stock = 10;
+    if (!productos[i].cat) productos[i].cat = "Otros";
+  }
+}
+
+function buscar(id) {
+  for (var i = 0; i < productos.length; i++) {
+    if (productos[i].id === id) return i;
+  }
+  return -1;
+}
+
+function pintarProductos() {
+  var html = "";
+  for (var i = 0; i < productos.length; i++) {
+    var p = productos[i];
+    if (catActual && p.cat !== catActual) continue;
+    html += '<div class="tarjeta">' +
+      '<img src="' + p.img + '" alt="' + p.nombre + '">' +
+      '<h3>' + p.nombre + '</h3>' +
+      '<p>' + p.cat + ' · ' + p.desc + '</p>' +
+      '<p class="precio">$' + p.precio.toLocaleString() + '</p>' +
+      (p.stock > 0
+        ? '<button class="boton boton-blanco" onclick="agregarCarrito(' + p.id + ')">Agregar</button>'
+        : '<button class="boton" disabled>Agotado</button>') +
+      '</div>';
+  }
+  document.getElementById("lista-productos").innerHTML = html || "<p>No hay productos</p>";
+}
+
+function agregarCarrito(id) {
+  var i = buscar(id);
+  if (i === -1) return;
+  var n = 0;
+  for (var j = 0; j < carrito.length; j++) if (carrito[j].id === id) n++;
+  if (n >= productos[i].stock) { alert("No hay más stock de este producto"); return; }
+  carrito.push(productos[i]);
+  guardarDatos();
+  actualizarContador();
+}
+
+function actualizarContador() {
+  document.getElementById("contador").innerText = carrito.length;
+}
+
+function abrirCarrito() {
+  var modal = document.getElementById("modal-carrito");
+  if (modal.style.display === "flex") {
+    modal.style.display = "none";
+  } else {
+    pintarCarrito();
+    modal.style.display = "flex";
+  }
+}
+
+function pintarCarrito() {
+  var html = "";
+  var total = 0;
+  if (carrito.length === 0) html = "<p>Carrito vacío</p>";
+  for (var i = 0; i < carrito.length; i++) {
+    total += carrito[i].precio;
+    html += '<div class="item-carrito"><span>' + carrito[i].nombre + ' - $' + carrito[i].precio.toLocaleString() + '</span>' +
+      '<button onclick="quitarCarrito(' + i + ')">Quitar</button></div>';
+  }
+  document.getElementById("items-carrito").innerHTML = html;
+  document.getElementById("total-carrito").innerText = total.toLocaleString();
+}
+
+function quitarCarrito(i) {
+  carrito.splice(i, 1);
+  guardarDatos();
+  pintarCarrito();
+  actualizarContador();
+}
+
+function vaciarCarrito() {
+  if (carrito.length === 0) return;
+  if (confirm("¿Vaciar el carrito?")) {
+    carrito = [];
+    guardarDatos();
+    pintarCarrito();
+    actualizarContador();
+  }
+}
+
+function pagar() {
+  if (carrito.length === 0) {
+    alert("El carrito está vacío");
+    return;
+  }
+  var total = 0;
+  for (var i = 0; i < carrito.length; i++) total += carrito[i].precio;
+  document.getElementById("total-pago").innerText = total.toLocaleString();
+  document.getElementById("modal-carrito").style.display = "none";
+  document.getElementById("modal-pago").style.display = "flex";
+}
+
+function cerrarPago() {
+  document.getElementById("modal-pago").style.display = "none";
+}
+
+function cambiarPago() {
+  var forma = document.getElementById("forma-pago").value;
+  var tipos = ["tarjeta", "transferencia", "efectivo"];
+  for (var i = 0; i < tipos.length; i++) {
+    var caja = document.getElementById("pago-" + tipos[i]);
+    caja.style.display = (tipos[i] === forma) ? "flex" : "none";
+  }
+}
+
+function confirmarPago(e) {
+  e.preventDefault();
+  var select = document.getElementById("forma-pago");
+  if (select.value === "tarjeta") {
+    if (!/^[0-9]{16}$/.test(document.getElementById("t-numero").value)) {
+      alert("La tarjeta debe tener 16 números");
+      return;
+    }
+    if (!/^[0-9]{2}\/[0-9]{2}$/.test(document.getElementById("t-venc").value)) {
+      alert("El vencimiento debe ser MM/AA");
+      return;
+    }
+    if (!/^[0-9]{3}$/.test(document.getElementById("t-cvv").value)) {
+      alert("El CVV debe tener 3 números");
+      return;
+    }
+  }
+  var usado = {};
+  for (var i = 0; i < carrito.length; i++) {
+    var id = carrito[i].id, k = buscar(id);
+    usado[id] = (usado[id] || 0) + 1;
+    if (k === -1 || usado[id] > productos[k].stock) {
+      alert("Sin stock suficiente de " + carrito[i].nombre);
+      return;
+    }
+  }
+  for (i = 0; i < carrito.length; i++) productos[buscar(carrito[i].id)].stock--;
+  var forma = select.options[select.selectedIndex].text;
+  var nombre = document.getElementById("p-nombre").value;
+  alert("¡Compra confirmada, " + nombre + "! Forma de pago: " + forma);
+  carrito = [];
+  actualizar();
+  e.target.reset();
+  cambiarPago();
+  cerrarPago();
+}
+
+function abrirMenu() {
+  var menu = document.getElementById("menu-extra");
+  if (menu.style.display === "flex") {
+    menu.style.display = "none";
+  } else {
+    menu.style.display = "flex";
+  }
+}
+
+function pintarCats() {
+  cats = [];
+  for (var i = 0; i < productos.length; i++) {
+    if (cats.indexOf(productos[i].cat) === -1) cats.push(productos[i].cat);
+  }
+  if (catActual && cats.indexOf(catActual) === -1) catActual = "";
+  var html = '<a href="#coleccion" onclick="filtrar(-1)">Todo</a>';
+  for (i = 0; i < cats.length; i++) {
+    html += '<a href="#coleccion" onclick="filtrar(' + i + ')">' + cats[i] + '</a>';
+  }
+  document.getElementById("menu-cats").innerHTML = html;
+}
+
+function filtrar(i) {
+  catActual = i < 0 ? "" : cats[i];
+  pintarProductos();
+  document.getElementById("menu-extra").style.display = "none";
+}
+
+function pintarStock() {
+  var h = '<tr><th>Producto</th><th>Tipo</th><th>Precio</th><th>Stock</th></tr>';
+  for (var i = 0; i < productos.length; i++) {
+    var p = productos[i];
+    var e = p.stock <= 0 ? "Agotado" : p.stock <= 5 ? "Pocas unidades (" + p.stock + ")" : "Disponible (" + p.stock + ")";
+    h += '<tr><td>' + p.nombre + '</td><td>' + p.cat + '</td><td>$' + p.precio.toLocaleString() + '</td><td>' + e + '</td></tr>';
+  }
+  document.getElementById("tabla-stock").innerHTML = h;
+}
+
+function entrarAdmin(e) {
+  e.preventDefault();
+  if (document.getElementById("clave").value === "admin123") {
+    document.getElementById("login-admin").style.display = "none";
+    document.getElementById("panel-admin").style.display = "block";
+    pintarAdmin();
+  } else {
+    document.getElementById("error-clave").style.display = "block";
+  }
+}
+
+function salirAdmin() {
+  document.getElementById("clave").value = "";
+  document.getElementById("login-admin").style.display = "block";
+  document.getElementById("panel-admin").style.display = "none";
+}
+
+function pintarAdmin() {
+  var html = "";
+  for (var i = 0; i < productos.length; i++) {
+    var p = productos[i];
+    html += '<div class="fila-admin"><span>' + p.nombre + ' (' + p.cat + ') - $' + p.precio.toLocaleString() + ' - Stock: ' + p.stock + '</span>' +
+      '<button onclick="abrirEditar(' + p.id + ')">Editar</button>' +
+      '<button onclick="borrarProducto(' + p.id + ')">Borrar</button></div>';
+  }
+  document.getElementById("lista-admin").innerHTML = html;
+}
+
+function actualizar() {
+  guardarDatos();
+  pintarCats();
+  pintarProductos();
+  pintarStock();
+  pintarAdmin();
+  actualizarContador();
+}
+
+function agregarProducto(e) {
+  e.preventDefault();
+  productos.push({
+    id: Date.now(),
+    nombre: document.getElementById("n-nombre").value,
+    precio: Number(document.getElementById("n-precio").value),
+    img: document.getElementById("n-img").value,
+    desc: document.getElementById("n-desc").value,
+    cat: norm(document.getElementById("n-cat").value),
+    stock: Math.max(0, Number(document.getElementById("n-stock").value))
+  });
+  actualizar();
+  e.target.reset();
+}
+
+function borrarProducto(id) {
+  if (!confirm("¿Borrar producto?")) return;
+  var nuevos = [];
+  for (var i = 0; i < productos.length; i++) {
+    if (productos[i].id !== id) nuevos.push(productos[i]);
+  }
+  productos = nuevos;
+  actualizar();
+}
+
+function restaurar() {
+  if (confirm("¿Restaurar tienda?")) {
+    productos = copiaBase();
+    carrito = [];
+    catActual = "";
+    actualizar();
+  }
+}
+
+function abrirEditar(id) {
+  var p = productos[buscar(id)];
+  document.getElementById("e-id").value = p.id;
+  document.getElementById("e-nombre").value = p.nombre;
+  document.getElementById("e-precio").value = p.precio;
+  document.getElementById("e-img").value = p.img;
+  document.getElementById("e-desc").value = p.desc;
+  document.getElementById("e-cat").value = p.cat;
+  document.getElementById("e-stock").value = p.stock;
+  document.getElementById("modal-editar").style.display = "flex";
+}
+
+function cerrarEditar() {
+  document.getElementById("modal-editar").style.display = "none";
+}
+
+function guardarEdicion(e) {
+  e.preventDefault();
+  var id = Number(document.getElementById("e-id").value);
+  var p = productos[buscar(id)];
+  p.nombre = document.getElementById("e-nombre").value;
+  p.precio = Number(document.getElementById("e-precio").value);
+  p.img = document.getElementById("e-img").value;
+  p.desc = document.getElementById("e-desc").value;
+  p.cat = norm(document.getElementById("e-cat").value);
+  p.stock = Math.max(0, Number(document.getElementById("e-stock").value));
+  actualizar();
+  cerrarEditar();
+}
+
+cargarDatos();
+actualizar();
+</script>
 </body>
 </html>
