@@ -178,7 +178,7 @@
 </div>
 
 <script>
-
+// productos de ejemplo que se usan la primera vez
 var productosBase = [
   {id:1, nombre:"Hoodie Onyx", precio:45000, img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600", desc:"Buzo oversize 400gsm", cat:"Buzo", stock:10},
   {id:2, nombre:"Remera Vintage", precio:18500, img:"https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600", desc:"Remera lavado ácido", cat:"Remera", stock:10},
@@ -201,10 +201,15 @@ function guardarDatos() {
 }
 
 function cargarDatos() {
-  var p = localStorage.getItem("productosTienda");
-  var c = localStorage.getItem("carritoTienda");
-  productos = p ? JSON.parse(p) : copiaBase();
-  carrito = c ? JSON.parse(c) : [];
+  try {
+    productos = JSON.parse(localStorage.getItem("productosTienda"));
+    carrito = JSON.parse(localStorage.getItem("carritoTienda"));
+  } catch (error) {
+    productos = null;
+    carrito = null;
+  }
+  if (!Array.isArray(productos) || productos.length === 0) productos = copiaBase();
+  if (!Array.isArray(carrito)) carrito = [];
   for (var i = 0; i < productos.length; i++) {
     if (productos[i].stock === undefined) productos[i].stock = 10;
     if (!productos[i].cat) productos[i].cat = "Otros";
