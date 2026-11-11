@@ -14,17 +14,10 @@
     <a href="#inicio">Inicio</a>
     <a href="#coleccion">Colección</a>
     <a href="#contacto">Contacto</a>
-    <a href="#admin">Admin</a>
   </nav>
   <button class="menu-hamburguesa" onclick="abrirMenu()">☰</button>
   <button class="boton boton-blanco" onclick="abrirCarrito()">Carrito (<span id="contador">0</span>)</button>
   <section id="menu-extra" class="menu-extra">
-    <div>
-      <h3>Contacto</h3>
-      <p>📍 Córdoba, Argentina</p>
-      <p>📞 351 1234567</p>
-      <p>📧 clandestyle@gmail.com</p>
-    </div>
     <div>
       <h3>Formas de pago</h3>
       <p>💳 Tarjeta</p>
@@ -62,9 +55,9 @@
     <p>📞 351 1234567</p>
     <p>📧 clandestyle@gmail.com</p>
     <div class="redes">
-      <a href="#">📷 Instagram</a>
-      <a href="#">📘 Facebook</a>
-      <a href="#">🎵 TikTok</a>
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener">📷 Instagram</a>
+      <a href="https://www.facebook.com/" target="_blank" rel="noopener">📘 Facebook</a>
+      <a href="https://www.tiktok.com/" target="_blank" rel="noopener">🎵 TikTok</a>
     </div>
   </section>
 
@@ -81,7 +74,7 @@
     </form>
   </section>
 
-  <section class="admin" id="admin">
+  <section class="admin" id="admin" style="display:none;">
     <h2>Panel Admin</h2>
 
     <div id="login-admin">
@@ -115,8 +108,10 @@
 <footer>
   <p>Clandestyle © 2026</p>
   <p>Ropa con actitud, hecha para durar.</p>
-  <a href="#">Instagram</a>
-  <a href="#">Facebook</a>
+  <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+  <a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a>
+  <a href="https://www.tiktok.com/" target="_blank" rel="noopener">TikTok</a>
+  <p><a href="#admin" onclick="abrirAdmin()">Admin</a></p>
 </footer>
 
 <a href="#inicio" class="boton-flotante">⬆️</a>
@@ -183,7 +178,7 @@
 </div>
 
 <script>
-// productos de ejemplo que se usan la primera vez
+
 var productosBase = [
   {id:1, nombre:"Hoodie Onyx", precio:45000, img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600", desc:"Buzo oversize 400gsm", cat:"Buzo", stock:10},
   {id:2, nombre:"Remera Vintage", precio:18500, img:"https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600", desc:"Remera lavado ácido", cat:"Remera", stock:10},
@@ -407,10 +402,16 @@ function entrarAdmin(e) {
   }
 }
 
+function abrirAdmin() {
+  document.getElementById("admin").style.display = "block";
+}
+
 function salirAdmin() {
   document.getElementById("clave").value = "";
+  document.getElementById("error-clave").style.display = "none";
   document.getElementById("login-admin").style.display = "block";
   document.getElementById("panel-admin").style.display = "none";
+  document.getElementById("admin").style.display = "none";
 }
 
 function pintarAdmin() {
